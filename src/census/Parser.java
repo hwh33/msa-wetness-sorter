@@ -5,6 +5,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.io.File;
@@ -84,6 +86,11 @@ public class Parser {
 		censusDataWorkbook.close();
 		
 		return newMSAIterator;
+	}
+	
+	public static HashMap<String, ArrayList<Integer>> getMSAtoFIPSMap(String msaDelineationsFilepath) {
+		// TODO: implement me
+		return null;
 	}
 
 }

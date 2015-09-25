@@ -114,6 +114,7 @@ public class Parser {
 			
 			// If the timeStamp meets the condition, then we need to exclude this from our map.
 			if (exclusionCondition.apply(timeStamp)) {
+				currentLine = hourlyPrecipFileReader.readLine();
 				continue;
 			}
 			

@@ -1,27 +1,20 @@
 package tests;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import climatology.WBANStation;
+
 public class RunTests {
 	
-	public static void main(String[] args) {
-		// test code; delete
-//		String locationRegEx = "\"[0-9]+\\*[0-9]+\'[0-9]+\"\"[NS]"
-//				+ " [0-9]+\\*[0-9]+\'[0-9]+\"\"[EW]\"";
-//		String locTest1 = "\"48*27'52\"\"N 119*31'01\"\"W\"";
-//		System.out.println("locTest1: " + locTest1);
-//		System.out.println(locTest1.matches(locationRegEx));
-//		
-//		String[] locTestPair = locTest1.split(" ");
-//		String latString = locTestPair[0];
-//		latString = latString.replace("\"", "");
-//		System.out.println(latString);
-//		System.out.println(latString.replaceAll("(^.*)(\\*.*)", "$1"));
-//		System.out.println(latString.replaceAll("([0-9]+\\*)([0-9]+)('.*)", "$2"));
-//		System.out.println(latString.replaceAll("([0-9*]+)'([0-9]+)([NSEW])", "$2"));
-//		System.out.println(latString.replaceAll("([0-9*']+)([NSEW]$)", "$2"));
-		
+	public static void main(String[] args) throws IOException {
 		ArrayList<Test> allTests = new ArrayList<Test>();
 		
 		allTests.add(new CensusTest());
@@ -38,6 +31,11 @@ public class RunTests {
 		} else {
 			System.out.println("Testing complete (failed tests)");
 		}
+	}
+	
+	private static URL apiRequestFromWBAN(WBANStation wbanStation) throws MalformedURLException {
+		return new URL("http://data.fcc.gov/api/block/find?latitude=" + wbanStation.getLatitude()
+			+ "&longitude=" + wbanStation.getLongitude() + "&showall=false");
 	}
 
 }

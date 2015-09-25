@@ -5,6 +5,7 @@ import climatology.TimeStampedData;
 import climatology.WBANStation;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -76,7 +77,8 @@ public class ClimatologyTest extends Test {
 		
 		HashMap<Integer, ArrayList<TimeStampedData>> precipMap;
 		try {
-			precipMap = Parser.getHourlyPrecipData(HOURLY_PRECIP_FILEPATH);
+			precipMap = Parser.getHourlyPrecipData(HOURLY_PRECIP_FILEPATH,
+					(LocalDateTime ldt) -> ldt.getHour() < 7);
 		} catch (IOException e) {
 			System.out.println("Test failed - IOException caught during parsing.");
 			System.out.println("Error message: " + e.getMessage());
