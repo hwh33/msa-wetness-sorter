@@ -74,4 +74,14 @@ public class MetropolitanStatisticalArea {
 			return statsTimeStamp;
 		}
 		
+		/**
+		 * @return		a string representation of the MSA object
+		 */
+		public String toString() {
+			return "Central Urban Area: " + centralUrbanArea + 
+					"; Census Population: " + Integer.toString(censusPopulation) + 
+					"; Average Yearly Change: " + Float.toString(averageYearlyPopulationChange) +
+					"; Stats Time Stamp: " + statsTimeStamp.toString();		
+		}
+		
 }

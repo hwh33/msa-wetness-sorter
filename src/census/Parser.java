@@ -1,17 +1,17 @@
 package census;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.IllegalArgumentException;
+import java.lang.IllegalStateException;
 import java.time.LocalDateTime;
-
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
  * A parser designed to read U.S. Census data stored in a (pre-2007) Excel file (.xls).
@@ -30,8 +30,7 @@ public class Parser {
 	
 	/**
 	 * Parses U.S. Census data in the file located at the input file path to return an iterator of
-	 * MetropolitanStatisticalArea objects representing each MSA in the file.
-	 * TODO: identify assumed format of file
+	 * MetropolitanStatisticalArea objects representing each MSA in the file. 
 	 * 
 	 * @param censusDataFilepath	the path to the file containing the census data; this file
 	 * 								should be a pre-2007 Excel file (.xls)
@@ -44,6 +43,7 @@ public class Parser {
 	 */
 	public static Iterator<MetropolitanStatisticalArea> getMSAIterator(String censusDataFilepath, 
 			LocalDateTime statsTimeStamp) throws IOException {
+		
 		// We want data from the first sheet (there should be only one anyway)
 		final int MSA_DATA_SHEET_NUMBER = 0;
 		
@@ -65,11 +65,12 @@ public class Parser {
 		// We move down the table row by row until we find the beginning of the MSA data.
 		int currentRowIndex = 0;
 		while (!readingMSAData) {
+//			System.out.println("currentRowIndex: " + currentRowIndex);
 			HSSFRow currentRow = censusDataSheet.getRow(currentRowIndex);
 			HSSFCell firstCell = currentRow.getCell(0);
 			
 			if(firstCell.getCellType() == HSSFCell.CELL_TYPE_STRING &&
-					firstCell.getStringCellValue() == LAST_COL_HEADER_PRE_MSA_LIST) {
+					firstCell.getStringCellValue().equals(LAST_COL_HEADER_PRE_MSA_LIST)) {
 				// If the current row is the last row before the MSA list, then we will begin
 				// reading MSA data on the next row.
 				readingMSAData = true;
@@ -99,12 +100,12 @@ class MSAIterator implements Iterator<MetropolitanStatisticalArea> {
 	
 	final int TOTAL_YEARS_FOR_POP_CHANGE = 10;
 	
-	private int currentRowIndex;
+	private int nextRowIndex;
 	private HSSFSheet censusDataSheet;
 	private LocalDateTime statsTimeStamp;
 	
 	public MSAIterator(int startRowIndex, HSSFSheet censusDataSheet, LocalDateTime statsTimeStamp) {
-		this.currentRowIndex = startRowIndex;
+		this.nextRowIndex = startRowIndex;
 		this.censusDataSheet = censusDataSheet;
 		this.statsTimeStamp = statsTimeStamp;
 	}
@@ -113,10 +114,10 @@ class MSAIterator implements Iterator<MetropolitanStatisticalArea> {
 		// The MSA list is followed by a blank line (after which begins the list of
 		// micropolitan statistical areas), so we finish when we find a blank cell in the
 		// first column.
-		HSSFRow nextRow = censusDataSheet.getRow(currentRowIndex+1);
+		HSSFRow nextRow = censusDataSheet.getRow(nextRowIndex);
 		HSSFCell firstCellNextRow = nextRow.getCell(0);
 		return (firstCellNextRow.getCellType() == HSSFCell.CELL_TYPE_STRING &&
-				firstCellNextRow.getStringCellValue() == "");
+				!firstCellNextRow.getStringCellValue().equals(""));
 	}
 	
 	public MetropolitanStatisticalArea next() {
@@ -124,7 +125,7 @@ class MSAIterator implements Iterator<MetropolitanStatisticalArea> {
 			throw new NoSuchElementException();
 		}
 		
-		HSSFRow currentRow = censusDataSheet.getRow(currentRowIndex++);
+		HSSFRow currentRow = censusDataSheet.getRow(nextRowIndex++);
 		HSSFCell centralUrbanAreaCell = currentRow.getCell(CENTRAL_URBAN_AREA_COL_INDEX);
 		HSSFCell mostRecentPopCell = currentRow.getCell(MOST_RECENT_POP_COL_INDEX);
 		HSSFCell popChangeCell = currentRow.getCell(POP_CHANGE_COL_INDEX);
@@ -132,7 +133,7 @@ class MSAIterator implements Iterator<MetropolitanStatisticalArea> {
 		if (centralUrbanAreaCell.getCellType() != HSSFCell.CELL_TYPE_STRING ||
 				mostRecentPopCell.getCellType() != HSSFCell.CELL_TYPE_NUMERIC ||
 				popChangeCell.getCellType() != HSSFCell.CELL_TYPE_NUMERIC) {
-			throw new IllegalArgumentException();
+			throw new IllegalStateException();
 		}
 		
 		String centralUrbanArea = centralUrbanAreaCell.getStringCellValue();
