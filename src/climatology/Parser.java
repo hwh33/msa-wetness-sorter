@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 /**
  * A parser designed to read climatology data stored in a file.
@@ -63,7 +64,8 @@ public class Parser {
 	}
 	
 	public static HashMap<Integer, ArrayList<TimeStampedData>> getHourlyPrecipData(
-			String hourlyPrecipDataFilepath) throws IOException {
+			String hourlyPrecipDataFilepath, Function<LocalDateTime, Boolean> exclusionCondition) 
+			throws IOException {
 		
 		final int WBAN_ID_INDEX = 0;
 		final int YMD_INDEX = 1;
@@ -108,6 +110,11 @@ public class Parser {
 			} catch (NumberFormatException e) {
 				hourlyPrecipFileReader.close();
 				throw new IllegalArgumentException("Malformed data in input file");
+			}
+			
+			// If the timeStamp meets the condition, then we need to exclude this from our map.
+			if (exclusionCondition.apply(timeStamp)) {
+				continue;
 			}
 			
 			if (!newHourlyPrecipMap.containsKey(wbanID)) {
