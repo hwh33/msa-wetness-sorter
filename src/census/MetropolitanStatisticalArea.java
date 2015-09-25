@@ -1,5 +1,6 @@
 package census;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -55,8 +56,16 @@ public class MetropolitanStatisticalArea {
 		 * 								assuming linear population change over all time
 		 */
 		public int extrapolatePopulation(LocalDateTime dateToExtrapolateTo) {
-			// TODO: implement me
-			return -1;
+			final double DAYS_PER_YEAR = 365;
+			
+			Duration durationToExtrapolate = Duration.between(statsTimeStamp, dateToExtrapolateTo);
+			long daysToExtrapolate = durationToExtrapolate.toDays();
+			if (dateToExtrapolateTo.isBefore(statsTimeStamp)) {
+				daysToExtrapolate = daysToExtrapolate * -1;
+			}
+			double yearsToExtrapolate = daysToExtrapolate / DAYS_PER_YEAR;
+			double extrapolatedPopChange = yearsToExtrapolate * averageYearlyPopulationChange;
+			return censusPopulation + (int) Math.round(extrapolatedPopChange);
 		}
 		
 		/**
