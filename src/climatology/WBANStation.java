@@ -6,11 +6,11 @@ import java.util.List;
 public class WBANStation {
 	
 	private int wbanID;
-	private float latitude;
-	private float longitude;
+	private double latitude;
+	private double longitude;
 	private HashMap<String, List<TimeStampedData>> stationData;
 	
-	public WBANStation(int wbanID, float latitude, float longitude) {
+	public WBANStation(int wbanID, double latitude, double longitude) {
 		this.wbanID = wbanID;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -20,11 +20,11 @@ public class WBANStation {
 		return wbanID;
 	}
 	
-	public float getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 	
-	public float getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 	
@@ -38,6 +38,16 @@ public class WBANStation {
 	
 	public void deleteStationData(String dataName) {
 		stationData.remove(dataName);
+	}
+	
+	public String toString() {
+		String stringToReturn =  "WBAN-ID: " + Integer.toString(wbanID)
+				+ "; latitude: " + Double.toString(latitude)
+				+ "; longitude: " + Double.toString(longitude);
+		if (stationData != null) {
+			stringToReturn = stringToReturn + "; Station Data: " + stationData.toString();
+		}
+		return stringToReturn;
 	}
 
 }

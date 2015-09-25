@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 public class TimeStampedData {
 	
 	private LocalDateTime timeStamp;
-	private float data;
+	private double data;
 	
-	public TimeStampedData(LocalDateTime timeStamp, float data) {
+	public TimeStampedData(LocalDateTime timeStamp, double data) {
 		this.timeStamp = timeStamp;
 		this.data = data;
 	}
@@ -16,7 +16,7 @@ public class TimeStampedData {
 		return timeStamp;
 	}
 	
-	public float getData() {
+	public double getData() {
 		return data;
 	}
 }
