@@ -20,10 +20,11 @@ public class MSAtoWBANMapper {
 		while (msaIter.hasNext()) {
 			MetropolitanStatisticalArea currentMSA = msaIter.next();
 			ArrayList<Integer> fipsCodes = msaToFipsMap.get(currentMSA.getCentralUrbanArea());
-			Iterator<Integer> fipsCodesIter = fipsCodes.iterator();
+			//Iterator<Integer> fipsCodesIter = fipsCodes.iterator();
 			ArrayList<WBANStation> wbanList = new ArrayList<WBANStation>();
-			while (fipsCodesIter.hasNext()) {
-				int currentFipsCode = fipsCodesIter.next();
+			//while (fipsCodesIter.hasNext()) {
+			for (int currentFipsCode : fipsCodes) {
+				//int currentFipsCode = fipsCodesIter.next();
 				ArrayList<WBANStation> currentWBANS = fipsToWBANMap.get(currentFipsCode);
 				wbanList.addAll(currentWBANS);
 			}
