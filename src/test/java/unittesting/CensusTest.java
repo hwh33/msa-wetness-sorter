@@ -1,4 +1,4 @@
-package unit_testing;
+package unittesting;
 
 import census.MetropolitanStatisticalArea;
 import census.Parser;
