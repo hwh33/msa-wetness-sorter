@@ -29,6 +29,7 @@ func main() {
 
 	// Start up the file server.
 	fileServer := http.FileServer(http.Dir(fileServerRoot))
+	fmt.Println("Starting server")
 	http.ListenAndServe(serverAddress, fileServer)
 
 	// If this point is reached then the provided address was invalid.
